@@ -121,10 +121,10 @@ localhost
 *.$maildomain
 EOF
 cat >> /etc/opendkim/KeyTable <<EOF
-mail._domainkey.$maildomain $maildomain:mail:$(find /etc/opendkim/domainkeys -iname *.private)
+bridge._domainkey.$maildomain $maildomain:bridge:$(find /etc/opendkim/domainkeys -iname bridge.private)
 EOF
 cat >> /etc/opendkim/SigningTable <<EOF
-*@$maildomain mail._domainkey.$maildomain
+*@$maildomain bridge._domainkey.$maildomain
 EOF
-chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname *.private)
-chmod 400 $(find /etc/opendkim/domainkeys -iname *.private)
+chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname bridge.private)
+chmod 400 $(find /etc/opendkim/domainkeys -iname bridge.private)
