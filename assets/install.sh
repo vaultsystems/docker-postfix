@@ -27,7 +27,9 @@ tail -f /var/log/mail.log
 EOF
 chmod +x /opt/postfix.sh
 postconf -e myhostname=$maildomain
+postconf -e mydestination=$mydestination
 postconf -F '*/*/chroot = n'
+postconf -e inet_protocols=ipv4
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -66,6 +68,14 @@ if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/ce
   postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
   postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
   postconf -P "submission/inet/smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination"
+  postconf -e smtpd_tls_ciphers=high
+  postconf -e smtpd_tls_mandatory_ciphers=high
+  postconf -e smtpd_tls_mandatory_exclude_ciphers=aNULL,MD5
+  postconf -e smtpd_tls_security_level=encrypt
+  # Preferred syntax with Postfix ≥ 2.5:
+  postconf -e smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3
+  # Legacy syntax:
+  postconf -e smtpd_tls_mandatory_protocols=TLSv1
 fi
 
 #############
