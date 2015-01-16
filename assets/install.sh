@@ -41,6 +41,11 @@ cat >> /etc/postfix/virtual <<EOF
 EOF
 postmap /etc/postfix/virtual
 
+# protective markings filter
+# /etc/postfix/master.cf
+postconf -M protective_markings/unix='protective_markings unix - n n - - pipe flags=Rq user=mail null_sender= argv=/usr/local/bin/filter.sh -f ${sender} -- ${recipient}'
+postconf -P 'smtp/inet/content_filter=protective_markings:dummy'
+
 ############
 # SASL SUPPORT FOR CLIENTS
 # The following options set parameters needed by Postfix to enable
