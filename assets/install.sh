@@ -26,25 +26,24 @@ service postfix start
 tail -f /var/log/mail.log
 EOF
 chmod +x /opt/postfix.sh
-postconf -e myhostname=$maildomain
-postconf -e mydestination=$mydestination
+postconf -e myhostname=$mydestination
 postconf -F '*/*/chroot = n'
 postconf -e inet_protocols=ipv4
 postconf -e "home_mailbox = Maildir/"
 
-postconf -e virtual_alias_domains=$maildomain
+postconf -e virtual_alias_domains=$mydestination
 postconf -e virtual_alias_maps=hash:/etc/postfix/virtual
 
 # catch-all
 cat >> /etc/postfix/virtual <<EOF
-@$mydestination mail@$mydestination
+@$mydestination mail@localhost
 EOF
 postmap /etc/postfix/virtual
 
 # protective markings filter
 # /etc/postfix/master.cf
 postconf -M protective_markings/unix='protective_markings unix - n n - - pipe flags=Rq user=mail null_sender= argv=/usr/local/bin/filter.sh -f ${sender} -- ${recipient}'
-postconf -P 'smtp/inet/content_filter=protective_markings:dummy'
+#postconf -P 'smtp/inet/content_filter=protective_markings:dummy'
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -79,7 +78,7 @@ if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/ce
   # /etc/postfix/master.cf
   postconf -M submission/inet="submission   inet   n   -   n   -   -   smtpd"
   postconf -P "submission/inet/syslog_name=postfix/submission"
-  postconf -P "submission/inet/smtpd_tls_security_level=may"
+  postconf -P "submission/inet/smtpd_tls_security_level=encrypt"
   postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
   postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
   postconf -P "submission/inet/smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination"
@@ -143,7 +142,6 @@ EOF
 cat >> /etc/opendkim/TrustedHosts <<EOF
 127.0.0.1
 localhost
-192.168.0.1/24
 
 *.$maildomain
 EOF
