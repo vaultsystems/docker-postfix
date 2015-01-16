@@ -30,6 +30,16 @@ postconf -e myhostname=$maildomain
 postconf -e mydestination=$mydestination
 postconf -F '*/*/chroot = n'
 postconf -e inet_protocols=ipv4
+postconf -e "home_mailbox = Maildir/"
+
+postconf -e virtual_alias_domains=$maildomain
+postconf -e virtual_alias_maps=hash:/etc/postfix/virtual
+
+# catch-all
+cat >> /etc/postfix/virtual <<EOF
+@$mydestination mail@$mydestination
+EOF
+postmap /etc/postfix/virtual
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -64,19 +74,21 @@ if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/ce
   # /etc/postfix/master.cf
   postconf -M submission/inet="submission   inet   n   -   n   -   -   smtpd"
   postconf -P "submission/inet/syslog_name=postfix/submission"
-  postconf -P "submission/inet/smtpd_tls_security_level=encrypt"
+  postconf -P "submission/inet/smtpd_tls_security_level=may"
   postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
   postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
   postconf -P "submission/inet/smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination"
   postconf -e smtpd_tls_ciphers=high
-  postconf -e smtpd_tls_mandatory_ciphers=high
-  postconf -e smtpd_tls_mandatory_exclude_ciphers=aNULL,MD5
-  postconf -e smtpd_tls_security_level=encrypt
+  postconf -e smtpd_tls_exclude_ciphers=aNULL,MD5
+  postconf -e smtpd_tls_security_level=may
   # Preferred syntax with Postfix ≥ 2.5:
-  postconf -e smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3
-  # Legacy syntax:
-  postconf -e smtpd_tls_mandatory_protocols=TLSv1
+  postconf -e smtpd_tls_protocols=!SSLv2,!SSLv3
 fi
+# client TLS
+postconf -e smtp_tls_security_level=may
+postconf -e smtp_tls_ciphers=high
+postconf -e smtp_tls_exclude_ciphers=aNULL,MD5
+postconf -e smtp_tls_protocols=!SSLv2,!SSLv3
 
 #############
 #  opendkim
