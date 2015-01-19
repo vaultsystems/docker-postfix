@@ -30,9 +30,11 @@ postconf -e myhostname=$mydestination
 postconf -F '*/*/chroot = n'
 postconf -e inet_protocols=ipv4
 postconf -e "home_mailbox = Maildir/"
+postconf -e 'smtpd_banner=$myhostname Microsoft ESMTP MAIL Service, Version: 5.0.2195.1600 ready'
 
 postconf -e virtual_alias_domains=$mydestination
 postconf -e virtual_alias_maps=hash:/etc/postfix/virtual
+postconf -X mydestination
 
 # catch-all
 cat >> /etc/postfix/virtual <<EOF
@@ -43,7 +45,6 @@ postmap /etc/postfix/virtual
 # protective markings filter
 # /etc/postfix/master.cf
 postconf -M protective_markings/unix='protective_markings unix - n n - - pipe flags=Rq user=mail null_sender= argv=/usr/local/bin/filter.sh -f ${sender} -- ${recipient}'
-#postconf -P 'smtp/inet/content_filter=protective_markings:dummy'
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -51,8 +52,7 @@ postconf -M protective_markings/unix='protective_markings unix - n n - - pipe fl
 # Cyrus-SASL support for authentication of mail clients.
 ############
 # /etc/postfix/main.cf
-postconf -e smtpd_sasl_auth_enable=yes
-postconf -e broken_sasl_auth_clients=yes
+postconf -e smtpd_sasl_auth_enable=no
 postconf -e smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination
 # smtpd.conf
 cat >> /etc/postfix/sasl/smtpd.conf <<EOF
@@ -82,6 +82,7 @@ if [[ -n "$(find /etc/postfix/certs -iname *.crt)" && -n "$(find /etc/postfix/ce
   postconf -P "submission/inet/smtpd_sasl_auth_enable=yes"
   postconf -P "submission/inet/milter_macro_daemon_name=ORIGINATING"
   postconf -P "submission/inet/smtpd_recipient_restrictions=permit_sasl_authenticated,reject_unauth_destination"
+  postconf -P "submission/inet/content_filter=protective_markings:dummy"
   postconf -e smtpd_tls_ciphers=high
   postconf -e smtpd_tls_exclude_ciphers=aNULL,MD5
   postconf -e smtpd_tls_security_level=may
