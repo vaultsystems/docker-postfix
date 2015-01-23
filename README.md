@@ -4,6 +4,11 @@ docker-postfix
 run postfix with smtp authentication (sasldb) in a docker container.
 TLS and OpenDKIM support are optional.
 
+## Command line
+
+	docker run -p 25:25 -p 587:587 -e maildomain= -e mydestination= -e smtp_user=user:pwd -v /root/domainkeys:/etc/opendkim/domainkeys -v /root/certs:/etc/postfix/certs --name postfix -d -v /var/mail postfix/latest
+
+
 ## Requirement
 + Docker 1.0
 
