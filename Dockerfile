@@ -2,7 +2,7 @@ From ubuntu:trusty
 MAINTAINER Christoph Dwertmann
 
 RUN DEBIAN_FRONTEND=noninteractive \
-    sed -i 's#http://archive.ubuntu#http://au.archive.ubuntu#' /etc/apt/sources.list &&
+    sed -i 's#http://archive.ubuntu#http://au.archive.ubuntu#' /etc/apt/sources.list && \
     apt-get update -qq && \
     apt-get -y install supervisor postfix sasl2-bin opendkim opendkim-tools && \
     apt-get clean && \
