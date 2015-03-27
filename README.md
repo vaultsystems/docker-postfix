@@ -6,7 +6,7 @@ TLS and OpenDKIM support are optional.
 
 ## Command line
 
-	docker run -p 25:25 -p 587:587 -e maildomain= -e mydestination= -e smtp_user=user:pwd -v /root/domainkeys:/etc/opendkim/domainkeys -v /root/certs:/etc/postfix/certs --name postfix -d -v /var/mail postfix/latest
+	docker run -p 25:25 -p 587:587 -e maildomain= -e mydestination= -e smtp_user=user:pwd -v /root/domainkeys:/etc/opendkim/domainkeys -v /root/certs:/etc/postfix/certs -v /var/mail --name postfix -d  postfix/latest
 
 
 ## Requirement

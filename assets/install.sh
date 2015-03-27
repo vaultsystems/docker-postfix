@@ -96,6 +96,39 @@ postconf -e smtp_tls_exclude_ciphers=aNULL,MD5
 postconf -e smtp_tls_protocols=!SSLv2,!SSLv3
 
 #############
+#  swift
+#############
+
+cat >> /etc/supervisor/conf.d/supervisord.conf <<EOF
+
+[program:swift-upload]
+command=/usr/local/bin/swift-upload.sh
+EOF
+
+cat > /usr/local/bin/swift-upload.sh <<EOF
+#!/bin/bash
+OS_AUTH_URL=$OS_AUTH_URL
+OS_TENANT_NAME=$OS_TENANT_NAME
+OS_USERNAME=$OS_USERNAME
+OS_PASSWORD=$OS_PASSWORD
+
+while true; do
+  cd /var/mail
+  ls Maildir/new/* &>/dev/null
+  if [ $? -eq 0 ]; then
+    cd Maildir/new
+    files=`ls *`
+    swift upload mail $files
+    if [ $? -eq 0 ]; then
+      rm $files
+    fi
+  fi
+  sleep 10
+done
+EOF
+chmod 700 /usr/local/bin/swift-upload.sh
+
+#############
 #  opendkim
 #############
 
