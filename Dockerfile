@@ -1,11 +1,12 @@
 From ubuntu:trusty
 MAINTAINER Christoph Dwertmann
 
-# Set noninteractive mode for apt-get
-ENV DEBIAN_FRONTEND noninteractive
-
-# Update
-RUN apt-get update && apt-get -y install supervisor postfix sasl2-bin opendkim opendkim-tools
+RUN apt-get update && apt-get -y install 
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get update -qq && \
+    apt-get -y install supervisor postfix sasl2-bin opendkim opendkim-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Add files
 ADD assets/install.sh /opt/install.sh
