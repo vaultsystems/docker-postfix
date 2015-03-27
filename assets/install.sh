@@ -105,7 +105,7 @@ cat >> /etc/supervisor/conf.d/supervisord.conf <<EOF
 command=/usr/local/bin/swift-upload.sh
 EOF
 
-cat > /usr/local/bin/swift-upload.sh <<EOF
+cat > /usr/local/bin/swift-upload.sh <<\EOF
 #!/bin/bash
 OS_AUTH_URL=$OS_AUTH_URL
 OS_TENANT_NAME=$OS_TENANT_NAME
