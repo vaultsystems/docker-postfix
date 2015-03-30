@@ -45,7 +45,7 @@ postmap /etc/postfix/virtual
 
 # protective markings filter
 # /etc/postfix/master.cf
-postconf -M protective_markings/unix='protective_markings unix - n n - - pipe flags=Rq user=mail null_sender= argv=/usr/local/bin/filter.sh -f ${sender} -- ${recipient}'
+postconf -M protective_markings/unix='protective_markings unix - n n - - pipe flags=Rq user=mail null_sender= argv=/opt/filter.sh -f ${sender} -- ${recipient}'
 
 ############
 # SASL SUPPORT FOR CLIENTS
@@ -67,6 +67,11 @@ while IFS=':' read -r _user _pwd; do
   echo $_pwd | saslpasswd2 -p -c -u $maildomain $_user
 done < /tmp/passwd
 chown postfix.sasl /etc/sasldb2
+
+# swiftmail
+postconf -M swiftmail/unix='swiftmail unix - n n - - pipe flags=Rq user=mail null_sender= argv=/opt/swiftmail.sh -f ${sender} -- ${recipient}'
+postconf -M smtp/inet="smtp   inet   n   -   n   -   -   smtpd"
+postconf -P "smtp/inet/content_filter=swiftmail:dummy"
 
 ############
 # Enable TLS

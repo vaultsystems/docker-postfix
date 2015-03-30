@@ -3,13 +3,12 @@ MAINTAINER Christoph Dwertmann
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update -qq && \
-    apt-get -y install supervisor postfix sasl2-bin opendkim opendkim-tools && \
+    apt-get -y install supervisor postfix sasl2-bin opendkim opendkim-tools curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Add files
-ADD assets/install.sh /opt/install.sh
-ADD assets/filter.sh /usr/local/bin/filter.sh
+ADD assets/*.sh /opt
 
 # Run
 CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
