@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     rm -rf /var/lib/apt/lists/*
 
 # Add files
-ADD assets/*.sh /opt
+ADD assets/*.sh /opt/
 
 # Run
 CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
