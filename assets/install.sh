@@ -158,5 +158,4 @@ EOF
 cat >> /etc/opendkim/SigningTable <<EOF
 *@$maildomain bridge._domainkey.$maildomain
 EOF
-chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname *.private)
-chmod 400 $(find /etc/opendkim/domainkeys -iname *.private)
+chown opendkim:opendkim $(find /etc/opendkim/domainkeys -iname *.private) /etc/opendkim/domainkeys
