@@ -11,4 +11,4 @@ RUN DEBIAN_FRONTEND=noninteractive \
 ADD assets/*.sh /opt/
 
 # Run
-CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+CMD /opt/install.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf;busybox tail -F /var/log/mail.log

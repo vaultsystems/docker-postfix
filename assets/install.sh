@@ -8,7 +8,7 @@ fi
 #supervisor
 cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
 [supervisord]
-nodaemon=true
+nodaemon=false
 
 [program:postfix]
 command=/opt/postfix.sh
