@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#judgement
 if [[ -a /etc/supervisor/conf.d/supervisord.conf ]]; then
   exit 0
 fi
@@ -65,7 +64,7 @@ EOF
 # sasldb2
 echo $smtp_user | tr , \\n > /tmp/passwd
 while IFS=':' read -r _user _pwd; do
-  echo $_pwd | saslpasswd2 -p -c -u $maildomain $_user
+  echo $_pwd | saslpasswd2 -p -c -u `postconf -h mydomain` $_user
 done < /tmp/passwd
 chown postfix.sasl /etc/sasldb2
 
@@ -149,7 +148,6 @@ EOF
 cat >> /etc/opendkim/TrustedHosts <<EOF
 127.0.0.1
 localhost
-
 *.$maildomain
 EOF
 cat >> /etc/opendkim/KeyTable <<EOF
