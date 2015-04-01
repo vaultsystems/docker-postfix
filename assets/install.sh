@@ -64,7 +64,7 @@ EOF
 # sasldb2
 echo $smtp_user | tr , \\n > /tmp/passwd
 while IFS=':' read -r _user _pwd; do
-  echo $_pwd | saslpasswd2 -p -c -u `postconf -h mydomain` $_user
+  echo $_pwd | saslpasswd2 -p -c -u $maildomain $_user
 done < /tmp/passwd
 chown postfix.sasl /etc/sasldb2
 
