@@ -18,7 +18,7 @@ cd $INSPECT_DIR || {
 cat >in.$$ || { 
   echo Cannot save mail to file; exit $EX_TEMPFAIL; }
 
-curl -f -X POST -F file=@in.$$ http://swiftmail:5000/ || {
+curl -s -f -X POST -F file=@in.$$ http://swiftmail:5000/ || {
   echo Message could not be uploaded; exit $EX_TEMPFAIL; }
 
 exit $?
