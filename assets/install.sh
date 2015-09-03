@@ -30,7 +30,7 @@ postconf -F '*/*/chroot = n'
 postconf -e inet_protocols=ipv4
 postconf -e message_size_limit=20480000
 postconf -e 'home_mailbox=Maildir/'
-postconf -e 'smtpd_banner=$myhostname Microsoft ESMTP MAIL Service, Version: 5.0.2195.1600 ready'
+postconf -e 'smtpd_banner=$myhostname Microsoft ESMTP MAIL Service ready'
 postconf -e disable_vrfy_command=yes
 
 postconf -e virtual_alias_domains=$mydestination
