@@ -18,7 +18,7 @@ cd $INSPECT_DIR || {
 cat >in.$$ || { 
   echo Cannot save mail to file; exit $EX_TEMPFAIL; }
 
-egrep -q "^Subject:.*\[(SEC=Unofficial|SEC=Unclassified|DLM=For-Official-Use-Only|DLM=Sensitive|DLM=Sensitive:Legal|DLM=Sensitive:Personal)\]$" <in.$$ || {
+pcregrep -qM "^Subject:.*(\n|.)*\[(SEC=Unofficial|SEC=Unclassified|DLM=For-Official-Use-Only|DLM=Sensitive|DLM=Sensitive:Legal|DLM=Sensitive:Personal)\]$" <in.$$ || {
   echo Message is missing protective markings; exit $EX_UNAVAILABLE; }
 
 $SENDMAIL "$@" <in.$$
